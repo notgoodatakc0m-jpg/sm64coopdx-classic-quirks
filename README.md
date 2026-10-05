@@ -2,7 +2,7 @@
 
 A total `sm64coopdx` mod to restore the original hardware and regional features, such as bugs, glitches, quirks, and differences in Japan.
 
-## Features
+## Included Restorations & Assets
 
 * **Reset Button Effect:** Mimics the behavior when pressing the reset button on the Nintendo 64 console.
 * **Open JRB Star:** Disables the Jolly Roger Bay (JRB) box, making it possible to see the star in the open.
@@ -13,9 +13,9 @@ A total `sm64coopdx` mod to restore the original hardware and regional features,
 
 ## Installation
 
-1. Download the newest release or clone this repository to your `sm64coopdx` mods directory.
+1. Download this repository to your `sm64coopdx` mods directory.
 2. Activate the mod using the in-game Mod Menu.
-3. Setup all toggles if available.
+3. Ready to play!
 
 ## Compatibility
 

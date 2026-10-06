@@ -1,9 +1,11 @@
 starPositions = gLevelValues.starPositions
 vec3f_set(starPositions.TuxieMotherStarPos, 3500, -4300, 4650)
 gLevelValues.entryLevel = SPECIAL_WARP_TITLE
+gBehaviorValues.ProcessLODs = 1
 
 local g, t = 0, 0
 local x, y, k = 0, 0, 0
+local T,Bt = 1, 1
 local p
 local P = {}
 
@@ -13,13 +15,21 @@ for _, id in ipairs{
 	SOUND_PEACH_BAKE_A_CAKE, SOUND_PEACH_FOR_MARIO, SOUND_PEACH_MARIO2,
 } do P[id & 0xF0FF0000] = true end
 
-hook_event(HOOK_MARIO_UPDATE, function(m)
-	if m.playerIndex ~= 0 then return end
+local function freeze(on)
+	set_audio_muted(on)
+	if on then enable_time_stop_including_mario() camera_freeze()
+	else disable_time_stop_including_mario() camera_unfreeze() end
+end
+
+hook_event(HOOK_UPDATE, function()
+	local m = gMarioStates[0]
 	g = get_delayed_warp_op() == WARP_OP_GAME_OVER and g + 1 or 0
 	if g == 47 then warp_special(SPECIAL_WARP_GODDARD_GAMEOVER) end
-	if t > 0 then t = t + 1 elseif m.controller.buttonPressed & Y_BUTTON ~= 0 then t = 1 end
-	if t > 70 then
+	if t > 0 then t = t + 1
+	elseif m.controller.buttonPressed & Y_BUTTON ~= 0 then t = 1 freeze(true) end
+	if t > 120 then
 		t = 0
+		freeze(false)
 		local f = get_current_save_file_num()
 		if f > 0 then save_file_erase(f - 1) end
 		m.numStars, m.numLives, m.health = 0, 4, 0x880
@@ -39,6 +49,14 @@ hook_event(HOOK_ON_HUD_RENDER, function()
 		local h = math.min(s * t / 25, s + 1)
 		for y = 0, sh, s do djui_hud_render_rect(0, y, sw, h) end
 	end
+end)
+
+hook_event(HOOK_ON_HUD_RENDER_BEHIND, function()
+	djui_hud_set_resolution(RESOLUTION_N64)
+	local w, h = djui_hud_get_screen_width(), djui_hud_get_screen_height()
+	djui_hud_set_color(0, 0, 0, 50)
+	djui_hud_render_rect(0, 0, w, T)
+	djui_hud_render_rect(0, h - Bt, w, Bt)
 end)
 
 hook_behavior(id_bhvExclamationBox, OBJ_LIST_SURFACE, false, nil, function(o)
